@@ -8,7 +8,11 @@ class GamesRoutes {
         this.config();
     }
     config() {
-        this.router.get('/', gamesController_1.gamesController.index);
+        this.router.get('/', gamesController_1.gamesController.list);
+        this.router.get('/:id', gamesController_1.gamesController.getOne);
+        this.router.post('/', gamesController_1.gamesController.create);
+        this.router.put('/:id', gamesController_1.gamesController.update);
+        this.router.delete('/:id', gamesController_1.gamesController.delete);
     }
 }
 const gamesRoutes = new GamesRoutes();
