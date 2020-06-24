@@ -2,33 +2,33 @@ import { Request, Response } from 'express';
 
 import pool from '../database';
 
-class GamesController {
+class MoviesController {
 
   public list(req: Request, res: Response) {
-    pool.query('SELECT * FROM games', (err, games, fields) => {
+    pool.query('SELECT * FROM movies', (err, movies, fields) => {
       if (err) throw err;
 
-      res.json({ games: games });
+      res.json(movies);
     });
     
   }
 
   public getOne(req: Request, res: Response) {
     const { id } = req.params;
-    pool.query('SELECT * FROM games WHERE id = ?', [id], (err, game, fields) => {
+    pool.query('SELECT * FROM movies WHERE id = ?', [id], (err, movie, fields) => {
       if (err) throw err;
 
-      if (game.length > 0) {
-        return res.json({ game: game[0] });
+      if (movie.length > 0) {
+        return res.json(movie[0]);
       }
 
-      res.status(404).json({text: "The game doesn't exist"});
+      res.status(404).json({text: "The movie doesn't exist"});
     });
 
   }
 
   public create(req: Request, res: Response) {
-    pool.query('INSERT INTO games SET ?', [req.body], (err, results, fields) => {
+    pool.query('INSERT INTO movies SET ?', [req.body], (err, results, fields) => {
       if (err) throw err;
 
       res.json({ result: results });
@@ -38,7 +38,7 @@ class GamesController {
 
   public update(req: Request, res: Response) {
     const { id } = req.params;
-    pool.query('UPDATE games SET ? WHERE id = ?', [req.body, id], (err, results, fields) => {
+    pool.query('UPDATE movies SET ? WHERE id = ?', [req.body, id], (err, results, fields) => {
       if (err) throw err;
 
       res.json({ result: results });
@@ -48,7 +48,7 @@ class GamesController {
 
   public delete(req: Request, res: Response) {
     const { id } = req.params;
-    pool.query('DELETE FROM games WHERE id = ?', [id], (err, results, fields) => {
+    pool.query('DELETE FROM movies WHERE id = ?', [id], (err, results, fields) => {
       if (err) throw err;
       
       res.json({ result: results });
@@ -58,4 +58,4 @@ class GamesController {
 
 }
 
-export const gamesController = new GamesController();
+export const moviesController = new MoviesController();

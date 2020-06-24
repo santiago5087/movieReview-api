@@ -4,7 +4,7 @@ export default {
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'ng_games_db'
+    database: 'ng_movies_db'
   }
   
 }
