@@ -2,8 +2,11 @@ import express, { Application } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 
+import passport from './passport';
+
 import indexRoutes from './routes/indexRoutes';
 import moviesRoutes from './routes/moviesRoutes';
+import userRoutes from './routes/userRoutes';
 
 class Server {
 
@@ -19,15 +22,24 @@ class Server {
     this.app.set('port', process.env.PORT || 3000);
     this.app.use(morgan('dev'));
     this.app.use(cors());
-    this.app.use(express.json()); // parsea application/json request bodies (reemplaza bodyparser)
+
+    /* Parsea application/json request bodies (reemplaza bodyparser)
+    */
+    this.app.use(express.json()); // 
+
+    /* Parsea x-ww-form-urlencoded request bodies (reemplaza bodyparser)
+    extended: true -> soporta nested objects, con extended: false no.
+    */
     this.app.use(express.urlencoded({ extended: false })); 
-    // parsea x-ww-form-urlencoded request bodies (reemplaza bodyparser) 
-    // extended: true -> soporta nested objects, con extended: false no. 
+    
+    this.app.use(passport.initialize());
+    this.app.use(passport.session());
   }
 
   routes(): void {
     this.app.use('/', indexRoutes);
     this.app.use('/api/movies', moviesRoutes);
+    this.app.use('/api/users', userRoutes);
   }
 
   start(): void {
