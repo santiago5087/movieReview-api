@@ -1,11 +1,20 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy} from 'passport-local';
-import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import { Strategy as JwtStrategy, ExtractJwt, StrategyOptions } from 'passport-jwt';
 import jwt from 'jsonwebtoken';
 
 import pool from './database';
-import { User } from './models/user';
+import { User } from './models/user';  
 
+let getToken = (username: any) => {
+  return jwt.sign(username, process.env.SECRET_KEY as string, { expiresIn: '8h' });
+}
+
+let verifyUser = passport.authenticate('jwt', { session: false });
+
+/* Los parámetros username y password (credenciales) que toma la estrategia son los que se obtienen de sacar 
+del objeto req.body, por lo que se espera que existan en este objeto estos atributos.
+*/
 passport.use(new LocalStrategy((username, password, done) => {
     pool.query('SELECT * FROM users WHERE username = ?', [username], (err, user: User[], fields) => {
       if (err) return done(err);
@@ -34,4 +43,19 @@ passport.deserializeUser((username: string, done) => {
   });
 });
 
-export default passport;
+let ops: StrategyOptions = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: process.env.SECRET_KEY as string
+}
+
+passport.use(new JwtStrategy(ops, (jwt_payload, done) => {
+  pool.query('SELECT * FROM users WHERE username = ?', [jwt_payload.username], (err, user: User[], fields) => {
+    if (err) return done(err);
+    if (user.length == 0) return done(null, false, { message: 'Username doesn\'t exist or incorrect' });
+    
+    let actualUser: User = user[0];
+    return done(null, actualUser);
+  });
+}));
+
+export { passport, getToken, verifyUser };

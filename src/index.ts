@@ -1,8 +1,10 @@
+import * as dotenv from "dotenv";
+dotenv.config();
 import express, { Application } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 
-import passport from './passport';
+import * as authenticate from './authenticate';
 
 import indexRoutes from './routes/indexRoutes';
 import moviesRoutes from './routes/moviesRoutes';
@@ -32,8 +34,8 @@ class Server {
     */
     this.app.use(express.urlencoded({ extended: false })); 
     
-    this.app.use(passport.initialize());
-    this.app.use(passport.session());
+    this.app.use(authenticate.passport.initialize());
+    this.app.use(authenticate.passport.session());
   }
 
   routes(): void {

@@ -12,6 +12,7 @@ class UserRoutes {
 
   config(): void {
     this.router.post('/signup', userController.signUp);
+    this.router.post('/login', userController.login);
   }
 
 }

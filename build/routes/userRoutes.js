@@ -9,6 +9,7 @@ class UserRoutes {
     }
     config() {
         this.router.post('/signup', userController_1.userController.signUp);
+        this.router.post('/login', userController_1.userController.login);
     }
 }
 const userRoutes = new UserRoutes();
