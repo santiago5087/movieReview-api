@@ -7,8 +7,8 @@ import cors from 'cors';
 import * as authenticate from './authenticate';
 
 import indexRoutes from './routes/indexRoutes';
-import moviesRoutes from './routes/moviesRoutes';
 import userRoutes from './routes/userRoutes';
+import reviewRoutes from './routes/reviewRoutes';
 
 class Server {
 
@@ -40,8 +40,8 @@ class Server {
 
   routes(): void {
     this.app.use('/', indexRoutes);
-    this.app.use('/api/movies', moviesRoutes);
     this.app.use('/api/users', userRoutes);
+    this.app.use('/api/reviews', reviewRoutes);
   }
 
   start(): void {

@@ -1,4 +1,4 @@
-import { Request, Response, Express, NextFunction} from 'express';
+import { Request, Response, NextFunction} from 'express';
 
 import pool from '../database';
 import { User } from '../models/user';
