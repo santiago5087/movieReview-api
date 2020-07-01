@@ -7,5 +7,5 @@ export interface Review {
   movieRating: number;
   userRating: number;
   review: string;
-  userId: string;
+  username: string;
 }

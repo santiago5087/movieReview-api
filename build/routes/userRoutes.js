@@ -10,6 +10,7 @@ class UserRoutes {
     config() {
         this.router.post('/signup', userController_1.userController.signUp);
         this.router.post('/login', userController_1.userController.login);
+        this.router.get('/checkToken', userController_1.userController.checkJWT);
     }
 }
 const userRoutes = new UserRoutes();

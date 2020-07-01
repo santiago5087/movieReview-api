@@ -29,7 +29,7 @@ class UserController {
   }
 
   public login(req: Request, res: Response, next: NextFunction) {
-    passport.authenticate('local', (err, user: User, info) => {
+    passport.authenticate('local', { session: false }, (err, user: User, info) => {
       if (err) {
         res.setHeader('Content-Type', 'application/json');
         res.status(401).json({ err: err });
@@ -53,6 +53,22 @@ class UserController {
         res.setHeader('Content-Type', 'application/json');
         res.status(200).json({ succes: true, state: 'Login successful', token: token });
       });
+    })(req, res, next);
+  }
+
+  public checkJWT(req: Request, res: Response, next: NextFunction) {
+    passport.authenticate('jwt', { session: false }, (err, user: User, info) => {
+      if (err) {
+        res.setHeader('Content-Type', 'application/json');
+        res.status(401).json({ err: err });
+      }
+      if (!user) {
+        res.setHeader('Content-Type', 'application/json');
+        res.status(401).json({ succes: false, state: 'JWT invalid', err: info });
+      } else {
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json({ succes: true, state: 'JWT valid', user });
+      }
     })(req, res, next);
   }
 
