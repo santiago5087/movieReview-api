@@ -13,6 +13,7 @@ class ReviewRoutes {
 
   public config(): void {
     this.router.get('/', reviewController.getReviews);
+    this.router.get('/my-reviews', verifyUser, reviewController.getUserReview);
     this.router.get('/:id', verifyUser, reviewController.getReview);
     this.router.post('/', verifyUser, reviewController.createReview);
     this.router.put('/:id', verifyUser, reviewController.updateReview);

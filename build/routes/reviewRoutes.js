@@ -10,6 +10,7 @@ class ReviewRoutes {
     }
     config() {
         this.router.get('/', reviewController_1.reviewController.getReviews);
+        this.router.get('/my-reviews', authenticate_1.verifyUser, reviewController_1.reviewController.getUserReview);
         this.router.get('/:id', authenticate_1.verifyUser, reviewController_1.reviewController.getReview);
         this.router.post('/', authenticate_1.verifyUser, reviewController_1.reviewController.createReview);
         this.router.put('/:id', authenticate_1.verifyUser, reviewController_1.reviewController.updateReview);

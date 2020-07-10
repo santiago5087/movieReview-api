@@ -4,6 +4,7 @@ export interface Review {
   movieGenre: string;
   moviePlot: string;
   moviePoster: string;
+  type: string;
   movieRating: string;
   userRating: number;
   review: string;
