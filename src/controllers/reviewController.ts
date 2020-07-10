@@ -61,10 +61,8 @@ class ReviewController {
 
   public getUserReview(req: Request, res: Response) {
     let user: User = req.user as User;
-    console.log(user.username)
 
     pool.query('SELECT * FROM reviews WHERE username = ?', [user.username], (err, results, fields) => {
-      console.log('results', results);
       if (err) {
         res.setHeader('Content-Type', 'application/json');
         res.status(401).json({ success: false, err });
@@ -95,8 +93,17 @@ class ReviewController {
         res.setHeader('Content-Type', 'application/json');
         res.status(401).json({ success: false, err });
       } else {
-        res.setHeader('Content-Type', 'application/json');
-        res.status(200).json({ success: true, result: results });
+        let user: User = req.user as User;
+
+        pool.query('SELECT * FROM reviews WHERE username = ?', [user.username], (err, results, fields) => {
+          if (err) {
+            res.setHeader('Content-Type', 'application/json');
+            res.status(401).json({ success: false, err });
+          } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.status(200).json({ success: true, result: results });
+          }
+        });
       }
     });
   }
