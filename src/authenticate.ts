@@ -2,6 +2,7 @@ import passport from 'passport';
 import { Strategy as LocalStrategy} from 'passport-local';
 import { Strategy as JwtStrategy, ExtractJwt, StrategyOptions } from 'passport-jwt';
 import jwt from 'jsonwebtoken';
+import * as bcrypt from 'bcrypt';
 
 import pool from './database';
 import { User } from './models/user';  
@@ -21,10 +22,12 @@ passport.use(new LocalStrategy((username, password, done) => {
       if (user.length == 0) return done(null, false, { message: 'Username doesn\'t exist or incorrect' });
       
       let actualUser: User = user[0];
-      // Crear el método que compara las claves cifradas
-      if (actualUser.password !== password) return done(null, false, { message: 'Incorrect password' });
       
-      return done(null, actualUser);
+      bcrypt.compare(password, actualUser.password).then(result => {
+        if (result) return done(null, actualUser);
+        else return done(null, false, { message: 'Incorrect password' }); 
+      });      
+      
     });
 }));
 

@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -9,6 +28,7 @@ exports.passport = passport_1.default;
 const passport_local_1 = require("passport-local");
 const passport_jwt_1 = require("passport-jwt");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const bcrypt = __importStar(require("bcrypt"));
 const database_1 = __importDefault(require("./database"));
 let getToken = (username) => {
     return jsonwebtoken_1.default.sign(username, process.env.SECRET_KEY, { expiresIn: '8h' });
@@ -26,10 +46,12 @@ passport_1.default.use(new passport_local_1.Strategy((username, password, done) 
         if (user.length == 0)
             return done(null, false, { message: 'Username doesn\'t exist or incorrect' });
         let actualUser = user[0];
-        // Crear el método que compara las claves cifradas
-        if (actualUser.password !== password)
-            return done(null, false, { message: 'Incorrect password' });
-        return done(null, actualUser);
+        bcrypt.compare(password, actualUser.password).then(result => {
+            if (result)
+                return done(null, actualUser);
+            else
+                return done(null, false, { message: 'Incorrect password' });
+        });
     });
 }));
 /* El username es guardado en la sesión, para después recuperar el objeto completo con el método deserialize.

@@ -1,31 +1,39 @@
 import { Request, Response, NextFunction} from 'express';
+import * as bcrypt from 'bcrypt';
 
 import pool from '../database';
 import { User } from '../models/user';
 import { passport, getToken } from '../authenticate';
 
+let saltRounds = 10;;
+
 class UserController {
 
   public signUp(req: Request, res: Response) {
-    var user: User = {
-      username: req.body.username,
-      email: req.body.email,
-      password: req.body.password,
-      profilePicture: req.body.profilePicture
-    }
-    
-    pool.query('INSERT INTO users SET ?', [user], (err, results, fields) => {
-      if (err) {
-        res.setHeader('Content-Type', 'application/json');
-        res.status(401).json({ succes: false, state: 'Error', err });
-      } else {
-        passport.authenticate('local')(req, res, () => {
-          res.setHeader('Content-Type', 'application/json');
-          res.status(200).json({ success: true, state: 'Registration successful!' });
-        });
-      }
 
+    bcrypt.hash(req.body.password, saltRounds).then(passHash => {
+
+      var user: User = {
+        username: req.body.username,
+        email: req.body.email,
+        password: passHash,
+        profilePicture: req.body.profilePicture
+      }
+      
+      pool.query('INSERT INTO users SET ?', [user], (err, results, fields) => {
+        if (err) {
+          res.setHeader('Content-Type', 'application/json');
+          res.status(401).json({ succes: false, state: 'Error', err });
+        } else {
+          passport.authenticate('local')(req, res, () => {
+            res.setHeader('Content-Type', 'application/json');
+            res.status(200).json({ success: true, state: 'Registration successful!' });
+          });
+        }
+  
+      });
     });
+
   }
 
   public login(req: Request, res: Response, next: NextFunction) {
@@ -70,6 +78,31 @@ class UserController {
         res.status(200).json({ success: true, state: 'JWT valid', user });
       }
     })(req, res, next);
+  }
+
+  changePassword(req: Request, res: Response) {
+    let user: User = req.user as User;
+
+    bcrypt.compare(req.body.password, user.password).then(result => {
+      if (result) {
+        bcrypt.hash(req.body.newPassword, saltRounds).then(passwordHash => {
+          user.password = passwordHash;
+
+          pool.query('UPDATE users SET ? WHERE username = ?', [user, user.username], (err, results, fields) => {
+            if (err) {
+              res.setHeader('Content-Type', 'application/json');
+              res.status(401).json({ success: false, err });
+            } else {
+              res.setHeader('Content-Type', 'application/json');
+              res.status(200).json({ success: true, result: results });
+            }
+          });
+        })
+      } else {
+        res.setHeader('Content-Type', 'application/json');
+        res.status(401).json({ success: false, err: '' }); 
+      }
+    });
   }
 
 }
