@@ -16,6 +16,7 @@ class UserRoutes {
     this.router.post('/login', userController.login);
     this.router.get('/checkToken', userController.checkJWT);
     this.router.put('/changePass', verifyUser, userController.changePassword);
+    this.router.put('/updateProfile', verifyUser, userController.updateProfile);
   }
 
 }

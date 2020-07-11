@@ -97,10 +97,24 @@ class UserController {
               res.status(200).json({ success: true, result: results });
             }
           });
-        })
+        });
       } else {
         res.setHeader('Content-Type', 'application/json');
         res.status(401).json({ success: false, err: '' }); 
+      }
+    });
+  }
+
+  updateProfile(req: Request, res: Response) {
+    let user: User = req.user as User;
+
+    pool.query('UPDATE users SET ? WHERE username = ?', [req.body, user.username], (err, results, fields) => {
+      if (err) {
+        res.setHeader('Content-Type', 'application/json');
+        res.status(401).json({ success: false, err });
+      } else {
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200).json({ success: true, result: results });
       }
     });
   }

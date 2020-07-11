@@ -13,6 +13,7 @@ class UserRoutes {
         this.router.post('/login', userController_1.userController.login);
         this.router.get('/checkToken', userController_1.userController.checkJWT);
         this.router.put('/changePass', authenticate_1.verifyUser, userController_1.userController.changePassword);
+        this.router.put('/updateProfile', authenticate_1.verifyUser, userController_1.userController.updateProfile);
     }
 }
 const userRoutes = new UserRoutes();

@@ -115,5 +115,18 @@ class UserController {
             }
         });
     }
+    updateProfile(req, res) {
+        let user = req.user;
+        database_1.default.query('UPDATE users SET ? WHERE username = ?', [req.body, user.username], (err, results, fields) => {
+            if (err) {
+                res.setHeader('Content-Type', 'application/json');
+                res.status(401).json({ success: false, err });
+            }
+            else {
+                res.setHeader('Content-Type', 'application/json');
+                res.status(200).json({ success: true, result: results });
+            }
+        });
+    }
 }
 exports.userController = new UserController();
