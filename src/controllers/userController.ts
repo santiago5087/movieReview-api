@@ -94,13 +94,13 @@ class UserController {
               res.status(401).json({ success: false, err });
             } else {
               res.setHeader('Content-Type', 'application/json');
-              res.status(200).json({ success: true, result: results });
+              res.status(200).json({ success: true, result: 'Password has been updated successfully!' });
             }
           });
         });
       } else {
         res.setHeader('Content-Type', 'application/json');
-        res.status(401).json({ success: false, err: '' }); 
+        res.status(401).json({ success: false, err: 'Password entered is wrong' }); 
       }
     });
   }
@@ -114,7 +114,7 @@ class UserController {
         res.status(401).json({ success: false, err });
       } else {
         res.setHeader('Content-Type', 'application/json');
-        res.status(200).json({ success: true, result: results });
+        res.status(200).json({ success: true, result: 'Profile has been updated successfully' });
       }
     });
   }

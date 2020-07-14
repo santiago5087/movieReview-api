@@ -6,9 +6,9 @@ import cors from 'cors';
 
 import * as authenticate from './authenticate';
 
-import indexRoutes from './routes/indexRoutes';
 import userRoutes from './routes/userRoutes';
 import reviewRoutes from './routes/reviewRoutes';
+import movieRoutes from './routes/movieRoutes';
 
 class Server {
 
@@ -39,9 +39,9 @@ class Server {
   }
 
   routes(): void {
-    this.app.use('/', indexRoutes);
     this.app.use('/api/users', userRoutes);
     this.app.use('/api/reviews', reviewRoutes);
+    this.app.use('/api/movies', movieRoutes);
   }
 
   start(): void {
