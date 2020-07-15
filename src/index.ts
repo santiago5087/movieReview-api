@@ -2,6 +2,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import express, { Application } from 'express';
 import morgan from 'morgan';
+import path from 'path';
 import cors from 'cors';
 
 import * as authenticate from './authenticate';
@@ -27,7 +28,9 @@ class Server {
 
     /* Parsea application/json request bodies (reemplaza bodyparser)
     */
-    this.app.use(express.json()); // 
+    this.app.use(express.json());
+    console.log(path.join(__dirname, 'public'));
+    this.app.use(express.static(path.join(__dirname, '../src/public')));
 
     /* Parsea x-ww-form-urlencoded request bodies (reemplaza bodyparser)
     extended: true -> soporta nested objects, con extended: false no.
@@ -42,6 +45,9 @@ class Server {
     this.app.use('/api/users', userRoutes);
     this.app.use('/api/reviews', reviewRoutes);
     this.app.use('/api/movies', movieRoutes);
+    this.app.get('*', (req, res) => {
+      return res.sendFile(path.join(__dirname, '../src/public/index.html'));
+    });
   }
 
   start(): void {

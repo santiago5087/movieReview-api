@@ -1,10 +1,10 @@
 export default {
 
   database: {
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'ng_movies_db'
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DB
   }
   
 }
