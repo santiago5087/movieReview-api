@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node build/index.js",
-    "build": "tsc -w",
+    "build": "tsc",
     "dev": "nodemon build/index.js",
     "postinstall": "npm run build"
   },
